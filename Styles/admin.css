@@ -1,0 +1,144 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 2.5rem;
+}
+
+button {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  margin: 15px auto;
+  display: block;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e2e6ea;
+}
+
+.admin-container {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.admin-section {
+  margin-bottom: 40px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+select, textarea, input[type="text"], input[type="number"] {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+#add-option {
+  align-self: flex-start;
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+#add-option:hover {
+  background-color: #0056b3;
+}
+
+#correct-answer {
+  margin-top: 10px;
+}
+
+button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.mark-correct.selected {
+  background-color: #27ae60;
+  color: white;
+}
+
+/* Style for question display to match form layout */
+.question-list {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.question-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.question-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.question-card p {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.question-card ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.question-card li {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+.question-card li.correct {
+  font-weight: bold;
+  color: green;
+}
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
