@@ -2,13 +2,12 @@ let questions = [];
 let filteredQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-
 let timer;
-let timeLeft = 15; // seconds
+let timeLeft = 15;
 
-// Start & Next button listeners
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 document.getElementById('next-btn').addEventListener('click', () => {
+  clearInterval(timer);
   currentQuestionIndex++;
   if (currentQuestionIndex < filteredQuestions.length) {
     showQuestion();
@@ -26,8 +25,8 @@ function startQuiz() {
     return;
   }
 
-  filteredQuestions = category === 'All'
-    ? questions.slice()
+  filteredQuestions = (category === 'All')
+    ? [...questions]
     : questions.filter(q => q.category === category);
 
   filteredQuestions = shuffleArray(filteredQuestions);
@@ -43,50 +42,33 @@ function startQuiz() {
 
 function showQuestion() {
   const currentQuestion = filteredQuestions[currentQuestionIndex];
-  document.getElementById("question").textContent = currentQuestion.question;
-  document.getElementById("progress").textContent = `Question ${currentQuestionIndex + 1} of ${filteredQuestions.length}`;
-
-  const choicesList = document.getElementById("choices");
-  choicesList.innerHTML = "";
-
-  currentQuestion.choices.forEach(choice => {
-    const li = document.createElement("li");
-    li.textContent = choice;
-    li.addEventListener("click", () => selectAnswer(choice, li));
-    choicesList.appendChild(li);
-  });
-
+  document.getElementById('question').textContent = currentQuestion.question;
+  document.getElementById('choices').innerHTML = '';
+  document.getElementById('progress').textContent = `Question ${currentQuestionIndex + 1} of ${filteredQuestions.length}`;
   document.getElementById('next-btn').style.display = 'none';
 
-  // Start timer
-  clearInterval(timer);
-  timeLeft = 15;
-  document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+  currentQuestion.choices.forEach(choice => {
+    const li = document.createElement('li');
+    li.textContent = choice;
+    li.addEventListener('click', () => selectAnswer(choice, li));
+    document.getElementById('choices').appendChild(li);
+  });
 
-  timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      handleTimeout();
-    }
-  }, 1000);
+  startTimer();
 }
 
 function selectAnswer(choice, selectedLi) {
   clearInterval(timer);
-
   const currentQuestion = filteredQuestions[currentQuestionIndex];
-  const choicesList = document.getElementById("choices");
+  const choicesEl = document.getElementById('choices');
 
-  Array.from(choicesList.children).forEach(li => {
+  Array.from(choicesEl.children).forEach(li => {
     li.style.pointerEvents = 'none';
     if (li.textContent === currentQuestion.answer) {
-      li.style.backgroundColor = '#4caf50';
+      li.style.backgroundColor = '#4caf50'; // green
       li.style.color = 'white';
-    }
-    if (li === selectedLi && choice !== currentQuestion.answer) {
-      li.style.backgroundColor = '#f44336';
+    } else if (li === selectedLi && li.textContent !== currentQuestion.answer) {
+      li.style.backgroundColor = '#f44336'; // red
       li.style.color = 'white';
     }
   });
@@ -98,25 +80,38 @@ function selectAnswer(choice, selectedLi) {
   document.getElementById('next-btn').style.display = 'inline-block';
 }
 
-function handleTimeout() {
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
-  const choicesList = document.getElementById("choices");
+function showResults() {
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.remove('hidden');
+  document.getElementById('score').textContent = `Score: ${score} out of ${filteredQuestions.length}`;
+}
 
-  Array.from(choicesList.children).forEach(li => {
+function startTimer() {
+  timeLeft = 15;
+  document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      autoSelect();
+    }
+  }, 1000);
+}
+
+function autoSelect() {
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
+  const choicesEl = document.getElementById('choices');
+  Array.from(choicesEl.children).forEach(li => {
     li.style.pointerEvents = 'none';
     if (li.textContent === currentQuestion.answer) {
       li.style.backgroundColor = '#4caf50';
       li.style.color = 'white';
     }
   });
-
   document.getElementById('next-btn').style.display = 'inline-block';
-}
-
-function showResults() {
-  document.getElementById('quiz-screen').classList.add('hidden');
-  document.getElementById('result-screen').classList.remove('hidden');
-  document.getElementById('score').textContent = `Score: ${score} out of ${filteredQuestions.length}`;
 }
 
 function shuffleArray(array) {

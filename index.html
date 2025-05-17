@@ -4,26 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Immersion Day Quiz</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./Styles/main.css" />
 </head>
 <body>
   <div class="quiz-container">
     <h1>Immersion Day Quiz</h1>
 
     <div id="start-screen">
-  <input type="text" id="username" placeholder="Enter your name" />
-  <label for="category">Select Category:</label>
-  <select id="category">
-    <option value="All">All Categories</option>
-    <option value="Web Development">Web Development</option>
-    <option value="Programming Languages">Programming Languages</option>
-    <option value="Databases">Databases</option>
-    <option value="Computer Networking">Computer Networking</option>
-    <option value="Artificial Intelligence">Artificial Intelligence</option>
-  </select>
-  <button id="start-btn">Start Quiz</button>
-  <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a>
-</div>
+      <input type="text" id="username" placeholder="Enter your name" />
+      <label for="category">Select Category:</label>
+      <select id="category">
+        <option value="All">All Categories</option>
+        <option value="Web Development">Web Development</option>
+        <option value="Programming Languages">Programming Languages</option>
+        <option value="Databases">Databases</option>
+        <option value="Computer Networking">Computer Networking</option>
+        <option value="Artificial Intelligence">Artificial Intelligence</option>
+      </select>
+      <button id="start-btn">Start Quiz</button>
+      <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a>
+    </div>
 
     <div id="quiz-screen" class="hidden">
       <div id="question-container">
@@ -42,6 +42,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="./Scripts/main.js"></script>
 </body>
 </html>
