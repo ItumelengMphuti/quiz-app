@@ -1,62 +1,88 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Elements
   const form = document.getElementById("question-form");
   const categorySelect = document.getElementById("category");
   const questionList = document.getElementById("question-list");
+  const settingsForm = document.getElementById("settings-form");
 
-  // Load questions from localStorage or JSON file
-  const loadQuestions = async () => {
+  const minInput = document.getElementById("min-questions");
+  const maxInput = document.getElementById("max-questions");
+
+  // Escape HTML helper
+  const escapeHTML = (str) =>
+    str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // Load questions from localStorage
+  const loadQuestions = () => {
     const stored = localStorage.getItem("questions");
-    if (stored) return JSON.parse(stored);
-
-    const res = await fetch("questions.json");
-    const data = await res.json();
-    localStorage.setItem("questions", JSON.stringify(data));
-    return data;
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        console.warn("Invalid JSON in localStorage, resetting.");
+        localStorage.removeItem("questions");
+        return [];
+      }
+    }
+    return [];
   };
 
-  // Save to localStorage
+  // Save questions to localStorage
   const saveQuestions = (questions) => {
     localStorage.setItem("questions", JSON.stringify(questions));
   };
 
-  // Render all questions
+  // Render questions list
   const renderQuestions = (questions) => {
     questionList.innerHTML = "";
 
-    questions.forEach((q, index) => {
+    if (questions.length === 0) {
+      questionList.textContent = "No questions available.";
+      return;
+    }
+
+    questions.forEach((q, idx) => {
       const card = document.createElement("div");
       card.classList.add("question-card");
 
       card.innerHTML = `
-        <h4>${index + 1}. ${q.question}</h4>
-        <p class="subtext">Category: ${q.category}</p>
+        <h4>${idx + 1}. ${escapeHTML(q.question)}</h4>
+        <p class="subtext">Category: ${escapeHTML(q.category)}</p>
         <ul class="options-list">
-          ${q.choices.map(choice =>
-            `<li class="${choice === q.answer ? 'correct' : ''}">${choice}</li>`
-          ).join("")}
+          ${q.choices
+            .map(
+              (choice) =>
+                `<li class="${choice === q.answer ? "correct" : ""}">${escapeHTML(
+                  choice
+                )}</li>`
+            )
+            .join("")}
         </ul>
-        <button class="delete-btn" data-index="${index}">Delete</button>
+        <button class="delete-btn" data-index="${idx}">Delete</button>
       `;
 
       questionList.appendChild(card);
     });
 
-    // Attach delete listeners
-    document.querySelectorAll(".delete-btn").forEach(btn => {
+    // Delete button handlers
+    document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const idx = btn.getAttribute("data-index");
+        const idx = parseInt(btn.getAttribute("data-index"), 10);
         questions.splice(idx, 1);
         saveQuestions(questions);
         renderQuestions(questions);
+        loadCategories(questions);
       });
     });
   };
 
-  // Load categories into <select>
+  // Load categories into select dropdown
   const loadCategories = (questions) => {
-    const categories = [...new Set(questions.map(q => q.category))];
-    categories.forEach(cat => {
+    // Clear existing options except first placeholder
+    categorySelect.innerHTML = '<option value="">Select category</option>';
+
+    const categories = [...new Set(questions.map((q) => q.category))];
+
+    categories.forEach((cat) => {
       const option = document.createElement("option");
       option.value = cat;
       option.textContent = cat;
@@ -64,25 +90,71 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Initialize
-  loadQuestions().then(data => {
-    renderQuestions(data);
-    loadCategories(data);
+  // Load settings from localStorage
+  const loadSettings = () => {
+    const stored = localStorage.getItem("quizSettings");
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        localStorage.removeItem("quizSettings");
+      }
+    }
+    return { min: 1, max: 5 };
+  };
+
+  // Save settings
+  const saveSettings = (min, max) => {
+    localStorage.setItem("quizSettings", JSON.stringify({ min, max }));
+  };
+
+  // Initialize settings inputs from localStorage
+  const settings = loadSettings();
+  minInput.value = settings.min;
+  maxInput.value = settings.max;
+
+  // Settings form submit handler
+  settingsForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const minVal = parseInt(minInput.value, 10);
+    const maxVal = parseInt(maxInput.value, 10);
+
+    if (isNaN(minVal) || isNaN(maxVal) || minVal < 1 || maxVal < 1) {
+      alert("Please enter valid positive numbers for min and max.");
+      return;
+    }
+
+    if (minVal > maxVal) {
+      alert("Minimum cannot be greater than maximum.");
+      return;
+    }
+
+    saveSettings(minVal, maxVal);
+    alert("Settings saved!");
   });
 
-  // Mark correct button logic
-  document.querySelectorAll(".mark-correct").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".mark-correct").forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
+  // Handle marking correct answer buttons
+  const setupMarkCorrectButtons = () => {
+    document.querySelectorAll(".mark-correct").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // Remove 'selected' from all siblings in options-container
+        btn.parentElement.parentElement
+          .querySelectorAll(".mark-correct")
+          .forEach((b) => b.classList.remove("selected"));
+
+        btn.classList.add("selected");
+      });
     });
-  });
+  };
 
-  // Handle form submission
+  setupMarkCorrectButtons();
+
+  // Handle adding a new question
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const category = categorySelect.value;
+    const category = categorySelect.value.trim();
     const questionText = document.getElementById("question").value.trim();
 
     const optionInputs = document.querySelectorAll(".option-input");
@@ -94,12 +166,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (val) {
         options.push(val);
         const btn = input.nextElementSibling;
-        if (btn.classList.contains("selected")) answer = val;
+        if (btn && btn.classList.contains("selected")) {
+          answer = val;
+        }
       }
     });
 
-    if (!category || !questionText || options.length < 2 || !answer) {
-      alert("Please fill in all fields and select the correct answer.");
+    if (!category) {
+      alert("Please select a category.");
+      return;
+    }
+    if (!questionText) {
+      alert("Please enter the question text.");
+      return;
+    }
+    if (options.length < 2) {
+      alert("Please provide at least two options.");
+      return;
+    }
+    if (!answer) {
+      alert("Please mark the correct answer.");
       return;
     }
 
@@ -107,15 +193,25 @@ document.addEventListener("DOMContentLoaded", () => {
       category,
       question: questionText,
       choices: options,
-      answer
+      answer,
     };
 
-    const current = JSON.parse(localStorage.getItem("questions")) || [];
-    current.push(newQuestion);
-    saveQuestions(current);
-    renderQuestions(current);
+    const questions = loadQuestions();
+    questions.push(newQuestion);
+    saveQuestions(questions);
 
+    renderQuestions(questions);
+    loadCategories(questions);
+
+    // Reset form & unselect correct buttons
     form.reset();
-    document.querySelectorAll(".mark-correct").forEach(btn => btn.classList.remove("selected"));
+    document.querySelectorAll(".mark-correct").forEach((btn) =>
+      btn.classList.remove("selected")
+    );
   });
+
+  // On initial page load, load questions & categories and render
+  const questions = loadQuestions();
+  renderQuestions(questions);
+  loadCategories(questions);
 });
