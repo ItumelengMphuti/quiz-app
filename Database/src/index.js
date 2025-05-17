@@ -24,12 +24,15 @@ const createQuestionsTable = async (err) => {
   return "Table created.";
 }
 
-const addQuestion = async(err) => {
+const addQuestion = async(err, quesNum) => {
   const addQuestionQuery = `INSERT INTO questions(category, question, choice_a, choice_b, choice_c, choice_d) 
     VALUES ($$${category}$$, $$${question}$$, $$${choice_a}$$, $$${choice_b}$$, $$${choice_c}$$, $$${choice_d}$$);`;
 
-  await pool.query(addQuestionQuery);
-  if(err) throw new Error(`Failed to add entry/entries to database: ${err}.`);
+  for(let i = 0; i <= quesNum; i++){
+    await pool.query(addQuestionQuery);
+    if(err) throw new Error(`Failed to add entry/entries to database: ${err}.`);
+  }
+
   return "Records added successfully."
 }
 
