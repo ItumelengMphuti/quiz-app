@@ -60,7 +60,27 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showResults() {
-    document.querySelector('.quiz-question').innerHTML = `<h2>Quiz Complete!</h2><p>Score: ${score} out of ${filteredQuestions.length}</p>`;
+    // Save high score to localStorage
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('username') || 'Anonymous';
+    const category = params.get('category') || 'General';
+    const highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
+    highScores.push({ name: username, score, total: filteredQuestions.length, category, date: new Date().toISOString() });
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+
+    document.querySelector('.quiz-question').innerHTML = `
+      <h2 class="quiz-complete-title">Quiz Completed!</h2>
+      <div class="quiz-score-large">${score} / ${filteredQuestions.length}</div>
+      <div class="quiz-encouragement">${score === filteredQuestions.length ? 'Excellent!' : score > 0 ? 'Good job!' : 'Keep practicing!'}</div>
+      <button class="btn btn-dark" id="view-high-scores">View High Scores</button>
+      <button class="btn btn-light" id="return-home">Return to Home</button>
+    `;
+    document.getElementById('view-high-scores').onclick = function() {
+      window.location.href = 'highscores.html';
+    };
+    document.getElementById('return-home').onclick = function() {
+      window.location.href = 'user.html';
+    };
   }
 
   function startTimer() {
