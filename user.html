@@ -8,8 +8,9 @@
 </head>
 <body>
   <div class="quiz-container">
+    <button class="home" onclick="window.location.href='index.html'">Back to home</button>
     <h1>Start a New Quiz</h1>
-    <p class="subheading">Enter your name and select a category</p>
+    <p class="subtext">Enter your name and select a category</p>
     <div id="start-screen">
       <div class="form-group">
         <label for="username">Your Name</label>
@@ -21,7 +22,7 @@
           <!-- Category radio buttons will be injected here by JS -->
         </div>
       </div>
-      <button id="start-btn">Start Quiz</button>
+      <button id="start-btn" class="submit-btn">Start Quiz</button>
     </div>
   </div>
   <script src="./Scripts/user.js"></script>
