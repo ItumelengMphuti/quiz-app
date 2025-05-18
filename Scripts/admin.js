@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const escapeHTML = (str) =>
     str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+  let questions = [];
+  let newCatInput; // define at the top so it's always available
+
   const loadQuestions = () => {
     const stored = localStorage.getItem("questions");
     if (stored) {
@@ -92,11 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
       option.value = "new";
       option.textContent = "New Category";
       categorySelect.appendChild(option);
-      const newCategoryInput = document.createElement("input");
-      newCategoryInput.type = "text";
-      newCategoryInput.id = "new-category-input";
-      newCategoryInput.placeholder = "Enter new category name";
-      categorySelect.parentNode.insertBefore(newCategoryInput, categorySelect.nextSibling);
+      newCatInput = document.createElement("input");
+      newCatInput.type = "text";
+      newCatInput.id = "new-category-input";
+      newCatInput.placeholder = "Enter new category name";
+      newCatInput.style.display = "none";
+      categorySelect.parentNode.insertBefore(newCatInput, categorySelect.nextSibling);
     } else {
       categories.forEach((cat) => {
         const option = document.createElement("option");
@@ -105,6 +109,20 @@ document.addEventListener("DOMContentLoaded", () => {
         categorySelect.appendChild(option);
       });
     }
+    // Add option for new category
+    const newCatOption = document.createElement("option");
+    newCatOption.value = "__new__";
+    newCatOption.textContent = "Add New Category...";
+    categorySelect.appendChild(newCatOption);
+
+    categorySelect.addEventListener('change', function() {
+      if (categorySelect.value === "__new__") {
+        newCatInput.style.display = 'block';
+        newCatInput.focus();
+      } else {
+        newCatInput.style.display = 'none';
+      }
+    });
   };
 
   const handleNewCategory = () => {
@@ -178,10 +196,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const category = categorySelect.value.trim();
-    if (category === "new") {
-      handleNewCategory();
-      return;
+    let category = categorySelect.value.trim();
+    if (category === "__new__") {
+      category = newCatInput.value.trim();
+      if (!category) {
+        alert('Please enter a new category name.');
+        newCatInput.focus();
+        return;
+      }
     }
     const questionText = document.getElementById("question").value.trim();
     const optionInputs = document.querySelectorAll(".option-input");
@@ -219,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
       choices: options,
       answer,
     };
-    const questions = loadQuestions();
     questions.push(newQuestion);
     saveQuestions(questions);
     renderQuestions(questions);
@@ -228,9 +249,70 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".mark-correct").forEach((btn) =>
       btn.classList.remove("selected")
     );
+
+    // Add a button to download the updated questions.json
+    let downloadBtn = document.getElementById('download-questions-btn');
+    if (!downloadBtn) {
+      downloadBtn = document.createElement('button');
+      downloadBtn.id = 'download-questions-btn';
+      downloadBtn.className = 'btn btn-dark';
+      downloadBtn.textContent = 'Download Updated Questions';
+      form.parentNode.appendChild(downloadBtn);
+    }
+    downloadBtn.onclick = function() {
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(questions, null, 2));
+      const dl = document.createElement('a');
+      dl.setAttribute('href', dataStr);
+      dl.setAttribute('download', 'questions.json');
+      dl.click();
+    };
   });
 
-  const questions = loadQuestions();
-  renderQuestions(questions);
-  loadCategories(questions);
+  // Fetch categories and questions from questions.json
+  fetch('questions.json')
+    .then(response => response.json())
+    .then(data => {
+      const questionsFromFile = data;
+      questions = questionsFromFile;
+      // Populate category dropdown
+      const categorySelect = document.getElementById("category");
+      const categories = [...new Set(questionsFromFile.map(q => q.category))];
+      categorySelect.innerHTML = '<option value="">Select category</option>';
+      categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+      // Add option for new category
+      const newCatOption = document.createElement("option");
+      newCatOption.value = "__new__";
+      newCatOption.textContent = "Add New Category...";
+      categorySelect.appendChild(newCatOption);
+
+      // Add input for new category (hidden by default)
+      if (!newCatInput) {
+        newCatInput = document.createElement('input');
+        newCatInput.type = 'text';
+        newCatInput.id = 'new-category-input';
+        newCatInput.placeholder = 'Enter new category';
+        newCatInput.style.display = 'none';
+        categorySelect.parentNode.insertBefore(newCatInput, categorySelect.nextSibling);
+      }
+      categorySelect.addEventListener('change', function() {
+        if (categorySelect.value === "__new__") {
+          newCatInput.style.display = 'block';
+          newCatInput.focus();
+        } else {
+          newCatInput.style.display = 'none';
+        }
+      });
+
+      // Render existing questions
+      renderQuestions(questionsFromFile);
+    })
+    .catch(err => {
+      console.error('Error loading questions.json:', err);
+      renderQuestions([]);
+    });
 });
