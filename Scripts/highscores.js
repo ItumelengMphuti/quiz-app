@@ -14,6 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   document.getElementById('return-home').onclick = function() {
-    window.location.href = 'user.html';
+    window.location.href = 'index.html';
   };
 }); 
