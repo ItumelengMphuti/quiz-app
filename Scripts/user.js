@@ -1,4 +1,5 @@
-const { fetchQuestions } = require("../Database/src/index.js")
+document.addEventListener('DOMContentLoaded', function() {
+// const { fetchQuestions } = require("../Database/src/index.js")
 
 let questions = [];
 let filteredQuestions = [];
@@ -7,23 +8,24 @@ let score = 0;
 let timer;
 let timeLeft = 15;
 
-console.log(fetchQuestions);
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 
 function startQuiz() {
   const username = document.getElementById('username').value.trim();
-  const category = document.getElementById('category').value;
+  const categoryRadio = document.querySelector('input[name="category"]:checked');
+  const category = categoryRadio ? categoryRadio.value : null;
 
   if (!username) {
     alert('Please enter your name');
     return;
   }
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
 
-  filteredQuestions = (category === 'All')
-    ? [...questions]
-    : questions.filter(q => q.category === category);
-
+  filteredQuestions = questions.filter(q => q.category === category);
   filteredQuestions = shuffleArray(filteredQuestions);
   currentQuestionIndex = 0;
   score = 0;
@@ -115,7 +117,30 @@ fetch('questions.json')
   .then(response => response.json())
   .then(data => {
     questions = data;
+    // Dynamically generate category radio buttons
+    const categories = [...new Set(questions.map(q => q.category))];
+    const categoryList = document.getElementById('category-list');
+    console.log('Loaded questions:', questions);
+    console.log('Extracted categories:', categories);
+    console.log('category-list element:', categoryList);
+    if (!categoryList) {
+      alert('Category list element not found!');
+      return;
+    }
+    categoryList.innerHTML = '';
+    categories.forEach(cat => {
+      const label = document.createElement('label');
+      label.className = 'category-option';
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'category';
+      input.value = cat;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(' ' + cat));
+      categoryList.appendChild(label);
+    });
   })
   .catch(err => {
     console.error('Error loading questions:', err);
   });
+});
