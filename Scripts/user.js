@@ -1,4 +1,4 @@
-const { fetchQuestions } = require("../Database/src/index.js")
+// const { fetchQuestions } = require("../Database/src/index.js")
 
 let questions = [];
 let filteredQuestions = [];
@@ -7,7 +7,6 @@ let score = 0;
 let timer;
 let timeLeft = 15;
 
-console.log(fetchQuestions);
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 document.getElementById('next-btn').addEventListener('click', () => {
@@ -66,16 +65,26 @@ function selectAnswer(choice, selectedLi) {
   const currentQuestion = filteredQuestions[currentQuestionIndex];
   const choicesEl = document.getElementById('choices');
 
-  Array.from(choicesEl.children).forEach(li => {
-    li.style.pointerEvents = 'none';
-    if (li.textContent === currentQuestion.answer) {
-      li.style.backgroundColor = '#4caf50'; // green
-      li.style.color = 'white';
-    } else if (li === selectedLi && li.textContent !== currentQuestion.answer) {
-      li.style.backgroundColor = '#f44336'; // red
-      li.style.color = 'white';
-    }
-  });
+ Array.from(choicesEl.children).forEach(li => {
+  li.style.pointerEvents = 'none';
+
+  const iconSpan = document.createElement('span');
+  iconSpan.style.marginLeft = '10px';
+  iconSpan.style.fontWeight = 'bold';
+
+  if (li.textContent === currentQuestion.answer) {
+    
+    iconSpan.textContent = '✔️';
+  } else if (li === selectedLi && li.textContent !== currentQuestion.answer) {
+    
+    iconSpan.textContent = '❌';
+  }
+
+  if (iconSpan.textContent) {
+    li.appendChild(iconSpan);
+  }
+});
+
 
   if (choice === currentQuestion.answer) {
     score++;

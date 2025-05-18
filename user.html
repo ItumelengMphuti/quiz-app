@@ -8,8 +8,9 @@
 </head>
 <body>
   <div class="quiz-container">
+    <button class="home" onclick="window.location.href='index.html'">Back to home</button>
     <h1>Immersion Day Quiz</h1>
-
+    
     <div id="start-screen">
       <input type="text" id="username" placeholder="Enter your name" />
       <label for="category">Select Category:</label>
@@ -22,7 +23,7 @@
         <option value="Artificial Intelligence">Artificial Intelligence</option>
       </select>
       <button id="start-btn">Start Quiz</button>
-      <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a>
+      <!-- <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a> -->
     </div>
 
     <div id="quiz-screen" class="hidden">
@@ -39,6 +40,12 @@
       <h2>Quiz Complete!</h2>
       <p id="score"></p>
       <button onclick="location.reload()">Restart</button>
+
+      <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ol id="leaderboard-list">
+      <!-- Populated via JavaScript -->
+    </ol>
     </div>
   </div>
 

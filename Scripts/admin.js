@@ -32,7 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
     questionList.innerHTML = "";
 
     if (questions.length === 0) {
-      questionList.textContent = "No questions available.";
+      questionList.innerHTML = `
+        <div class="no-questions">
+          <p>No questions available.</p>
+        </div>
+      `;
       return;
     }
 
@@ -41,31 +45,41 @@ document.addEventListener("DOMContentLoaded", () => {
       card.classList.add("question-card");
 
       card.innerHTML = `
-        <h4>${idx + 1}. ${escapeHTML(q.question)}</h4>
-        <p class="subtext">Category: ${escapeHTML(q.category)}</p>
+        <div class="question-header">
+          <h4>${idx + 1}. ${escapeHTML(q.question)}</h4>
+          <span class="category-badge">${escapeHTML(q.category)}</span>
+        </div>
+        
         <ul class="options-list">
           ${q.choices
-            .map(
-              (choice) =>
-                `<li class="${choice === q.answer ? "correct" : ""}">${escapeHTML(
-                  choice
-                )}</li>`
-            )
-            .join("")}
+          .map(
+            (choice, choiceIdx) =>
+              `<li class="option-item ${choice === q.answer ? "correct-answer" : ""}">
+                  <span class="option-letter">${String.fromCharCode(65 + choiceIdx)}.</span>
+                  ${escapeHTML(choice)}
+                </li>`
+          )
+          .join("")}
         </ul>
-        <button class="delete-btn" data-index="${idx}">Delete</button>
+        
+        <div class="question-actions">
+          <button class="delete-btn" data-index="${idx}">Delete</button>
+        </div>
       `;
 
       questionList.appendChild(card);
     });
 
     document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const idx = parseInt(btn.getAttribute("data-index"), 10);
-        questions.splice(idx, 1);
-        saveQuestions(questions);
-        renderQuestions(questions);
-        loadCategories(questions);
+        if (confirm("Are you sure you want to delete this question?")) {
+          questions.splice(idx, 1);
+          saveQuestions(questions);
+          renderQuestions(questions);
+          loadCategories(questions);
+        }
       });
     });
   };
@@ -124,11 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Settings saved!");
   });
 
-  // Handle marking correct answer buttons
   const setupMarkCorrectButtons = () => {
     document.querySelectorAll(".mark-correct").forEach((btn) => {
       btn.addEventListener("click", () => {
-        // Remove 'selected' from all siblings in options-container
         btn.parentElement.parentElement
           .querySelectorAll(".mark-correct")
           .forEach((b) => b.classList.remove("selected"));
@@ -140,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setupMarkCorrectButtons();
 
-  // Handle adding a new question
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
