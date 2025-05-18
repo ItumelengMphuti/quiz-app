@@ -9,7 +9,23 @@ let timer;
 let timeLeft = 15;
 
 
-document.getElementById('start-btn').addEventListener('click', startQuiz);
+document.getElementById('start-btn').addEventListener('click', function() {
+  const username = document.getElementById('username').value.trim();
+  const categoryRadio = document.querySelector('input[name="category"]:checked');
+  const category = categoryRadio ? categoryRadio.value : null;
+
+  if (!username) {
+    alert('Please enter your name');
+    return;
+  }
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
+
+  // Redirect to quiz.html with query params
+  window.location.href = `quiz.html?username=${encodeURIComponent(username)}&category=${encodeURIComponent(category)}`;
+});
 
 function startQuiz() {
   const username = document.getElementById('username').value.trim();
@@ -91,10 +107,13 @@ function showResults() {
 function startTimer() {
   timeLeft = 15;
   document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+  const timerBar = document.getElementById('timer-bar');
+  timerBar.style.width = '100%';
 
   timer = setInterval(() => {
     timeLeft--;
     document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+    timerBar.style.width = `${(timeLeft / 15) * 100}%`;
 
     if (timeLeft <= 0) {
       clearInterval(timer);
