@@ -46,6 +46,7 @@ button {
 }
 .home:hover {
   background-color: #CBF3F0;
+
 }
 
 .submit {
@@ -225,14 +226,23 @@ select {
   color: white;
 }
 
+.delete-btn:hover {
+  background-color: #835858;
+}
+
 .no-questions {
   text-align: center;
   padding: 30px;
   color: #666;
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .admin-container {
-    padding: 15px;
+    padding: 20px;
+    margin: 10px;
+  }
+
+  h1, h2 {
+    font-size: 22px;
   }
 
   .submit {
@@ -243,5 +253,70 @@ select {
   .question-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .option-group {
+    flex-direction: column;
+  }
+
+  .option-input {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .mark-correct {
+    width: 100%;
+  }
+
+  .question-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .question-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .question-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .home {
+    float: none;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .btn,
+  .submit-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  h1, h2 {
+    font-size: 20px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input,
+  select {
+    font-size: 14px;
+  }
+
+  .question-card,
+  .question-item {
+    padding: 15px;
+  }
+
+  .option-item {
+    padding: 8px 10px;
   }
 }

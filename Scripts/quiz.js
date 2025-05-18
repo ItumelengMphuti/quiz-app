@@ -68,19 +68,25 @@ document.addEventListener('DOMContentLoaded', function() {
     highScores.push({ name: username, score, total: filteredQuestions.length, category, date: new Date().toISOString() });
     localStorage.setItem('highScores', JSON.stringify(highScores));
 
-    document.querySelector('.quiz-question').innerHTML = `
-      <h2 class="quiz-complete-title">Quiz Completed!</h2>
-      <div class="quiz-score-large">${score} / ${filteredQuestions.length}</div>
-      <div class="quiz-encouragement">${score === filteredQuestions.length ? 'Excellent!' : score > 0 ? 'Good job!' : 'Keep practicing!'}</div>
-      <button class="btn btn-dark" id="view-high-scores">View High Scores</button>
-      <button class="btn btn-light" id="return-home">Return to Home</button>
-    `;
-    document.getElementById('view-high-scores').onclick = function() {
-      window.location.href = 'highscores.html';
-    };
-    document.getElementById('return-home').onclick = function() {
-      window.location.href = 'index.html';
-    };
+document.querySelector('.quiz-question').innerHTML = `
+  <div class="quiz-complete-box">
+    <h2 class="quiz-complete-title">Quiz Completed!</h2>
+    <div class="quiz-score-large">${score} / ${filteredQuestions.length}</div>
+    <div class="quiz-encouragement">
+      ${score === filteredQuestions.length ? 'Excellent!' : score > 0 ? 'Good job!' : 'Keep practicing!'}
+    </div>
+    <button class="btn btn-dark" id="view-high-scores">View High Scores</button>
+    <button class="btn btn-light" id="return-home">Return to Home</button>
+  </div>
+`;
+
+document.getElementById('view-high-scores').onclick = function () {
+  window.location.href = 'highscores.html';
+};
+document.getElementById('return-home').onclick = function () {
+  window.location.href = 'index.html';
+};
+
   }
 
   function startTimer() {
