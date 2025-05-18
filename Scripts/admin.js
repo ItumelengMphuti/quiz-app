@@ -71,17 +71,41 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const loadCategories = (questions) => {
-
     categorySelect.innerHTML = '<option value="">Select category</option>';
-
     const categories = [...new Set(questions.map((q) => q.category))];
-
-    categories.forEach((cat) => {
+    if (categories.length === 0) {
       const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat;
+      option.value = "new";
+      option.textContent = "New Category";
       categorySelect.appendChild(option);
-    });
+      const newCategoryInput = document.createElement("input");
+      newCategoryInput.type = "text";
+      newCategoryInput.id = "new-category-input";
+      newCategoryInput.placeholder = "Enter new category name";
+      categorySelect.parentNode.insertBefore(newCategoryInput, categorySelect.nextSibling);
+    } else {
+      categories.forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+    }
+  };
+
+  const handleNewCategory = () => {
+    const newCategoryInput = document.getElementById("new-category-input");
+    const newCategory = newCategoryInput.value.trim();
+    if (newCategory) {
+      const option = document.createElement("option");
+      option.value = newCategory;
+      option.textContent = newCategory;
+      categorySelect.appendChild(option);
+      categorySelect.value = newCategory;
+      newCategoryInput.value = "";
+    } else {
+      categorySelect.value = "";
+    }
   };
 
   const loadSettings = () => {
@@ -143,14 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle adding a new question
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-
     const category = categorySelect.value.trim();
+    if (category === "new") {
+      handleNewCategory();
+      return;
+    }
     const questionText = document.getElementById("question").value.trim();
-
     const optionInputs = document.querySelectorAll(".option-input");
     const options = [];
     let answer = "";
-
     optionInputs.forEach((input) => {
       const val = input.value.trim();
       if (val) {
@@ -161,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-
     if (!category) {
       alert("Please select a category.");
       return;
@@ -178,22 +202,17 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please mark the correct answer.");
       return;
     }
-
     const newQuestion = {
       category,
       question: questionText,
       choices: options,
       answer,
     };
-
     const questions = loadQuestions();
     questions.push(newQuestion);
     saveQuestions(questions);
-
     renderQuestions(questions);
     loadCategories(questions);
-
-
     form.reset();
     document.querySelectorAll(".mark-correct").forEach((btn) =>
       btn.classList.remove("selected")
