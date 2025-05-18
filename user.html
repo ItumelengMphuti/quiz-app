@@ -2,33 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard</title>
-  <link rel="stylesheet" href="main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Immersion Day Quiz</title>
+  <link rel="stylesheet" href="./Styles/user.css" />
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>User Dashboard</h1>
-    
-    <p id="user-greeting"></p>
+  <div class="quiz-container">
+    <h1>Immersion Day Quiz</h1>
 
-    <h2>Quiz Score History</h2>
-    <table id="score-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Score</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Score rows will be inserted here -->
-      </tbody>
-    </table>
+    <div id="start-screen">
+      <input type="text" id="username" placeholder="Enter your name" />
+      <label for="category">Select Category:</label>
+      <select id="category">
+        <option value="All">All Categories</option>
+        <option value="Web Development">Web Development</option>
+        <option value="Programming Languages">Programming Languages</option>
+        <option value="Databases">Databases</option>
+        <option value="Computer Networking">Computer Networking</option>
+        <option value="Artificial Intelligence">Artificial Intelligence</option>
+      </select>
+      <button id="start-btn">Start Quiz</button>
+      <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a>
+    </div>
 
-    <a href="index.html">Back to Quiz</a>
+    <div id="quiz-screen" class="hidden">
+      <div id="question-container">
+        <p id="timer">Time left: 15s</p>
+        <p id="progress">Question 1 of 5</p> 
+        <p id="question"></p>
+        <ul id="choices"></ul>
+      </div>
+      <button id="next-btn">Next</button>
+    </div>
+
+    <div id="result-screen" class="hidden">
+      <h2>Quiz Complete!</h2>
+      <p id="score"></p>
+      <button onclick="location.reload()">Restart</button>
+    </div>
   </div>
 
-  <script type="module" src="user.js"></script>
+  <script src="./Scripts/user.js"></script>
 </body>
 </html>
