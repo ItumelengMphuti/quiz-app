@@ -1,12 +1,6 @@
 [
   {
     "category": "Web Development",
-    "question": "Which HTML tag is used to define an unordered list?",
-    "choices": ["<ol>", "<ul>", "<list>", "<li>"],
-    "answer": "<ul>"
-  },
-  {
-    "category": "Web Development",
     "question": "What does a 404 HTTP status code mean?",
     "choices": ["Page moved", "Page not found", "Internal server error", "Request successful"],
     "answer": "Page not found"
@@ -47,12 +41,7 @@
     "choices": ["Returns length", "Creates a list", "Sorts items", "Defines variable"],
     "answer": "Returns length"
   },
-  {
-    "category": "Programming Languages",
-    "question": "Which symbol is used for comments in C++?",
-    "choices": ["//", "#", "<!--", "/* */"],
-    "answer": "//"
-  },
+
   {
     "category": "Programming Languages",
     "question": "Which language is known for its use in statistical analysis?",
