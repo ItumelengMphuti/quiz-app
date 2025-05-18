@@ -3,45 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Immersion Day Quiz</title>
+  <title>Start a New Quiz</title>
   <link rel="stylesheet" href="./Styles/user.css" />
 </head>
 <body>
   <div class="quiz-container">
-    <h1>Immersion Day Quiz</h1>
-
+    <h1>Start a New Quiz</h1>
+    <p class="subheading">Enter your name and select a category</p>
     <div id="start-screen">
-      <input type="text" id="username" placeholder="Enter your name" />
-      <label for="category">Select Category:</label>
-      <select id="category">
-        <option value="All">All Categories</option>
-        <option value="Web Development">Web Development</option>
-        <option value="Programming Languages">Programming Languages</option>
-        <option value="Databases">Databases</option>
-        <option value="Computer Networking">Computer Networking</option>
-        <option value="Artificial Intelligence">Artificial Intelligence</option>
-      </select>
+      <div class="form-group">
+        <label for="username">Your Name</label>
+        <input type="text" id="username" placeholder="Enter your name" />
+      </div>
+      <div class="form-group">
+        <label>Select Category</label>
+        <div id="category-list">
+          <label class="category-option"><input type="radio" name="category" value="Web Development"> Web Development</label>
+          <label class="category-option"><input type="radio" name="category" value="Programming Languages"> Programming Languages</label>
+          <label class="category-option"><input type="radio" name="category" value="Databases"> Databases</label>
+          <label class="category-option"><input type="radio" name="category" value="Computer Networking"> Computer Networking</label>
+          <label class="category-option"><input type="radio" name="category" value="Artificial Intelligence"> Artificial Intelligence</label>
+        </div>
+      </div>
       <button id="start-btn">Start Quiz</button>
-      <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a>
     </div>
-
     <div id="quiz-screen" class="hidden">
       <div id="question-container">
+        <div id="progress-bar-container">
+          <div id="progress-bar"></div>
+        </div>
         <p id="timer">Time left: 15s</p>
         <p id="progress">Question 1 of 5</p> 
         <p id="question"></p>
         <ul id="choices"></ul>
       </div>
-      <button id="next-btn">Next</button>
     </div>
-
     <div id="result-screen" class="hidden">
       <h2>Quiz Complete!</h2>
       <p id="score"></p>
-      <button onclick="location.reload()">Restart</button>
     </div>
   </div>
-
   <script src="./Scripts/user.js"></script>
 </body>
 </html>

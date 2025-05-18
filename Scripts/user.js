@@ -10,15 +10,6 @@ let timeLeft = 15;
 console.log(fetchQuestions);
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
-document.getElementById('next-btn').addEventListener('click', () => {
-  clearInterval(timer);
-  currentQuestionIndex++;
-  if (currentQuestionIndex < filteredQuestions.length) {
-    showQuestion();
-  } else {
-    showResults();
-  }
-});
 
 function startQuiz() {
   const username = document.getElementById('username').value.trim();
@@ -49,7 +40,7 @@ function showQuestion() {
   document.getElementById('question').textContent = currentQuestion.question;
   document.getElementById('choices').innerHTML = '';
   document.getElementById('progress').textContent = `Question ${currentQuestionIndex + 1} of ${filteredQuestions.length}`;
-  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%`;
 
   currentQuestion.choices.forEach(choice => {
     const li = document.createElement('li');
@@ -81,7 +72,12 @@ function selectAnswer(choice, selectedLi) {
     score++;
   }
 
-  document.getElementById('next-btn').style.display = 'inline-block';
+  if (currentQuestionIndex < filteredQuestions.length - 1) {
+    currentQuestionIndex++;
+    showQuestion();
+  } else {
+    showResults();
+  }
 }
 
 function showResults() {
@@ -100,22 +96,9 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      autoSelect();
+      selectAnswer(null, null);
     }
   }, 1000);
-}
-
-function autoSelect() {
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
-  const choicesEl = document.getElementById('choices');
-  Array.from(choicesEl.children).forEach(li => {
-    li.style.pointerEvents = 'none';
-    if (li.textContent === currentQuestion.answer) {
-      li.style.backgroundColor = '#4caf50';
-      li.style.color = 'white';
-    }
-  });
-  document.getElementById('next-btn').style.display = 'inline-block';
 }
 
 function shuffleArray(array) {
