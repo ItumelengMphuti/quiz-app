@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function() {
 // const { fetchQuestions } = require("../Database/src/index.js")
 
 let questions = [];
@@ -8,30 +9,39 @@ let timer;
 let timeLeft = 15;
 
 
-document.getElementById('start-btn').addEventListener('click', startQuiz);
-document.getElementById('next-btn').addEventListener('click', () => {
-  clearInterval(timer);
-  currentQuestionIndex++;
-  if (currentQuestionIndex < filteredQuestions.length) {
-    showQuestion();
-  } else {
-    showResults();
-  }
-});
-
-function startQuiz() {
+document.getElementById('start-btn').addEventListener('click', function() {
   const username = document.getElementById('username').value.trim();
-  const category = document.getElementById('category').value;
+  const categoryRadio = document.querySelector('input[name="category"]:checked');
+  const category = categoryRadio ? categoryRadio.value : null;
 
   if (!username) {
     alert('Please enter your name');
     return;
   }
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
 
-  filteredQuestions = (category === 'All')
-    ? [...questions]
-    : questions.filter(q => q.category === category);
+  // Redirect to quiz.html with query params
+  window.location.href = `quiz.html?username=${encodeURIComponent(username)}&category=${encodeURIComponent(category)}`;
+});
 
+function startQuiz() {
+  const username = document.getElementById('username').value.trim();
+  const categoryRadio = document.querySelector('input[name="category"]:checked');
+  const category = categoryRadio ? categoryRadio.value : null;
+
+  if (!username) {
+    alert('Please enter your name');
+    return;
+  }
+  if (!category) {
+    alert('Please select a category');
+    return;
+  }
+
+  filteredQuestions = questions.filter(q => q.category === category);
   filteredQuestions = shuffleArray(filteredQuestions);
   currentQuestionIndex = 0;
   score = 0;
@@ -48,7 +58,7 @@ function showQuestion() {
   document.getElementById('question').textContent = currentQuestion.question;
   document.getElementById('choices').innerHTML = '';
   document.getElementById('progress').textContent = `Question ${currentQuestionIndex + 1} of ${filteredQuestions.length}`;
-  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%`;
 
   currentQuestion.choices.forEach(choice => {
     const li = document.createElement('li');
@@ -90,7 +100,12 @@ function selectAnswer(choice, selectedLi) {
     score++;
   }
 
-  document.getElementById('next-btn').style.display = 'inline-block';
+  if (currentQuestionIndex < filteredQuestions.length - 1) {
+    currentQuestionIndex++;
+    showQuestion();
+  } else {
+    showResults();
+  }
 }
 
 function showResults() {
@@ -102,29 +117,19 @@ function showResults() {
 function startTimer() {
   timeLeft = 15;
   document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+  const timerBar = document.getElementById('timer-bar');
+  timerBar.style.width = '100%';
 
   timer = setInterval(() => {
     timeLeft--;
     document.getElementById('timer').textContent = `Time left: ${timeLeft}s`;
+    timerBar.style.width = `${(timeLeft / 15) * 100}%`;
 
     if (timeLeft <= 0) {
       clearInterval(timer);
-      autoSelect();
+      selectAnswer(null, null);
     }
   }, 1000);
-}
-
-function autoSelect() {
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
-  const choicesEl = document.getElementById('choices');
-  Array.from(choicesEl.children).forEach(li => {
-    li.style.pointerEvents = 'none';
-    if (li.textContent === currentQuestion.answer) {
-      li.style.backgroundColor = '#4caf50';
-      li.style.color = 'white';
-    }
-  });
-  document.getElementById('next-btn').style.display = 'inline-block';
 }
 
 function shuffleArray(array) {
@@ -141,7 +146,30 @@ fetch('questions.json')
   .then(response => response.json())
   .then(data => {
     questions = data;
+    // Dynamically generate category radio buttons
+    const categories = [...new Set(questions.map(q => q.category))];
+    const categoryList = document.getElementById('category-list');
+    console.log('Loaded questions:', questions);
+    console.log('Extracted categories:', categories);
+    console.log('category-list element:', categoryList);
+    if (!categoryList) {
+      alert('Category list element not found!');
+      return;
+    }
+    categoryList.innerHTML = '';
+    categories.forEach(cat => {
+      const label = document.createElement('label');
+      label.className = 'category-option';
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'category';
+      input.value = cat;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(' ' + cat));
+      categoryList.appendChild(label);
+    });
   })
   .catch(err => {
     console.error('Error loading questions:', err);
   });
+});

@@ -3,52 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Immersion Day Quiz</title>
+  <title>Start a New Quiz</title>
   <link rel="stylesheet" href="./Styles/user.css" />
 </head>
 <body>
   <div class="quiz-container">
-    <button class="home" onclick="window.location.href='index.html'">Back to home</button>
-    <h1>Immersion Day Quiz</h1>
-    
+    <h1>Start a New Quiz</h1>
+    <p class="subheading">Enter your name and select a category</p>
     <div id="start-screen">
-      <input type="text" id="username" placeholder="Enter your name" />
-      <label for="category">Select Category:</label>
-      <select id="category">
-        <option value="All">All Categories</option>
-        <option value="Web Development">Web Development</option>
-        <option value="Programming Languages">Programming Languages</option>
-        <option value="Databases">Databases</option>
-        <option value="Computer Networking">Computer Networking</option>
-        <option value="Artificial Intelligence">Artificial Intelligence</option>
-      </select>
-      <button id="start-btn">Start Quiz</button>
-      <!-- <a href="questions.json" download="questions.json" id="download-link">Download Questions JSON</a> -->
-    </div>
-
-    <div id="quiz-screen" class="hidden">
-      <div id="question-container">
-        <p id="timer">Time left: 15s</p>
-        <p id="progress">Question 1 of 5</p> 
-        <p id="question"></p>
-        <ul id="choices"></ul>
+      <div class="form-group">
+        <label for="username">Your Name</label>
+        <input type="text" id="username" placeholder="Enter your name" />
       </div>
-      <button id="next-btn">Next</button>
-    </div>
-
-    <div id="result-screen" class="hidden">
-      <h2>Quiz Complete!</h2>
-      <p id="score"></p>
-      <button onclick="location.reload()">Restart</button>
-
-      <div id="leaderboard">
-    <h3>Leaderboard</h3>
-    <ol id="leaderboard-list">
-      <!-- Populated via JavaScript -->
-    </ol>
+      <div class="form-group">
+        <label>Select Category</label>
+        <div id="category-list">
+          <!-- Category radio buttons will be injected here by JS -->
+        </div>
+      </div>
+      <button id="start-btn">Start Quiz</button>
     </div>
   </div>
-
   <script src="./Scripts/user.js"></script>
 </body>
 </html>
