@@ -1,9 +1,13 @@
+const { fetchQuestions } = require("../Database/src/index.js")
+
 let questions = [];
 let filteredQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
+
+console.log(fetchQuestions);
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 document.getElementById('next-btn').addEventListener('click', () => {

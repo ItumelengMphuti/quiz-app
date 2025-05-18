@@ -7,11 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const minInput = document.getElementById("min-questions");
   const maxInput = document.getElementById("max-questions");
 
-  // Escape HTML helper
   const escapeHTML = (str) =>
     str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  // Load questions from localStorage
   const loadQuestions = () => {
     const stored = localStorage.getItem("questions");
     if (stored) {
@@ -26,12 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return [];
   };
 
-  // Save questions to localStorage
   const saveQuestions = (questions) => {
     localStorage.setItem("questions", JSON.stringify(questions));
   };
 
-  // Render questions list
   const renderQuestions = (questions) => {
     questionList.innerHTML = "";
 
@@ -63,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
       questionList.appendChild(card);
     });
 
-    // Delete button handlers
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.getAttribute("data-index"), 10);
@@ -75,9 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Load categories into select dropdown
   const loadCategories = (questions) => {
-    // Clear existing options except first placeholder
+
     categorySelect.innerHTML = '<option value="">Select category</option>';
 
     const categories = [...new Set(questions.map((q) => q.category))];
@@ -90,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Load settings from localStorage
   const loadSettings = () => {
     const stored = localStorage.getItem("quizSettings");
     if (stored) {
@@ -103,17 +96,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return { min: 1, max: 5 };
   };
 
-  // Save settings
   const saveSettings = (min, max) => {
     localStorage.setItem("quizSettings", JSON.stringify({ min, max }));
   };
 
-  // Initialize settings inputs from localStorage
   const settings = loadSettings();
   minInput.value = settings.min;
   maxInput.value = settings.max;
 
-  // Settings form submit handler
   settingsForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -203,14 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
     renderQuestions(questions);
     loadCategories(questions);
 
-    // Reset form & unselect correct buttons
+
     form.reset();
     document.querySelectorAll(".mark-correct").forEach((btn) =>
       btn.classList.remove("selected")
     );
   });
 
-  // On initial page load, load questions & categories and render
   const questions = loadQuestions();
   renderQuestions(questions);
   loadCategories(questions);
