@@ -110,8 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
       questions = data;
+      // Get min and max from localStorage (set by admin)
+      const settings = JSON.parse(localStorage.getItem('quizSettings') || '{"min":1,"max":5}');
+      const min = settings.min || 1;
+      const max = settings.max || 5;
+      // Pick a random number between min and max
+      const numQuestions = Math.floor(Math.random() * (max - min + 1)) + min;
       filteredQuestions = questions.filter(q => q.category === category);
-      filteredQuestions = shuffleArray(filteredQuestions);
+      filteredQuestions = shuffleArray(filteredQuestions).slice(0, numQuestions);
       showQuestion();
     })
     .catch(err => {
