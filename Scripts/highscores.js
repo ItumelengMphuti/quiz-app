@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
-  // Sort by score descending, then by date
+
   highScores.sort((a, b) => b.score - a.score || new Date(b.date) - new Date(a.date));
   const list = document.getElementById('highscore-list');
   if (highScores.length === 0) {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
       list.appendChild(li);
     });
   }
-  document.getElementById('return-home').onclick = function() {
+  document.getElementById('return-home').onclick = function () {
     window.location.href = 'index.html';
   };
 }); 

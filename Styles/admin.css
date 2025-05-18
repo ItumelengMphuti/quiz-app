@@ -1,5 +1,5 @@
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   background-color: #f5f5f5;
   margin: 0;
   padding: 20px;
@@ -10,7 +10,7 @@ body {
 }
 
 .admin-container {
-  background-color: white;
+  background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   padding: 30px;
@@ -18,45 +18,63 @@ body {
   max-width: 800px;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .subtext {
   color: #7f8c8d;
   font-size: 14px;
-  margin-top: -15px;
+  margin-top: -10px;
   margin-bottom: 20px;
 }
-button {
+
+button,
+.btn {
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
-  margin-bottom: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  display: inline-block;
+  text-align: center;
+  font-weight: 600;
 }
+
 .home {
-  background-color: #FFFFFF;
-  color: #2EC4B6;
-  border: 2px solid #2EC4B6;
+  background-color: #ffffff;
+  color: #2ec4b6;
+  border: 2px solid #2ec4b6;
   float: right;
-  
-}
-.home:hover {
-  background-color: #CBF3F0;
-
+  min-width: 110px;
 }
 
-.submit {
+.home:hover,
+.home:focus {
+  background-color: #d0f0ec;
+  outline: none;
+}
+
+.submit,
+.submit-btn {
+  background-color: #ffbf69;
+  color: #3c2f00;
+  width: 100%;
   margin-top: 10px;
-  margin-left: 40%;
-  background-color: #FFBF69;
-  
+  min-width: 120px;
 }
-.submit:hover {
-  background-color: #FF9F1C;
+
+.submit:hover,
+.submit-btn:hover,
+.submit:focus,
+.submit-btn:focus {
+  background-color: #e6a800;
+  outline: none;
+  color: #fff;
 }
 
 form {
@@ -66,7 +84,7 @@ form {
 label {
   display: block;
   margin: 15px 0 5px;
-  color: #2EC4B6;
+  color: #2ec4b6;
   font-weight: 700;
 }
 
@@ -79,6 +97,14 @@ select {
   border-radius: 5px;
   font-size: 16px;
   box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border-color: #2ec4b6;
+  outline: none;
 }
 
 #options-container {
@@ -97,27 +123,31 @@ select {
   border: 1px solid #ddd;
   border-radius: 5px;
   margin-right: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.option-input:focus {
+  border-color: #2ec4b6;
+  outline: none;
 }
 
 .mark-correct {
-  background-color: #2EC4B6;
+  background-color: #2ec4b6;
+  color: #fff;
   padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.mark-correct:hover {
-  background-color: #CBF3F0;
-  color: #2EC4B6;
-}
-
-.submit-btn {
-  background-color: #FFBF69;
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-}
-
-.submit-btn:hover {
-  background-color: #FF9F1C;
+.mark-correct:hover,
+.mark-correct:focus {
+  background-color: #037269;
+  outline: none;
+  color: #fff;
 }
 
 .question-list {
@@ -127,12 +157,12 @@ select {
 
 .question-card,
 .question-item {
-  background: white;
+  background: #fff;
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border-left: 4px solid #FF9F1C;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ff9f1c;
   position: relative;
 }
 
@@ -141,6 +171,7 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .question-card h3,
@@ -148,6 +179,7 @@ select {
   margin-top: 0;
   color: #2c3e50;
   flex-grow: 1;
+  font-weight: 600;
 }
 
 .question-meta {
@@ -156,6 +188,7 @@ select {
   margin-bottom: 10px;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .category-badge,
@@ -166,6 +199,7 @@ select {
   border-radius: 4px;
   font-size: 14px;
   display: inline-block;
+  font-weight: 600;
 }
 
 .options-list,
@@ -182,18 +216,21 @@ select {
   background: #f8f9fa;
   display: flex;
   align-items: center;
+  font-size: 15px;
 }
 
 .option-letter {
   font-weight: bold;
   margin-right: 8px;
   color: #555;
+  min-width: 20px;
+  text-align: center;
 }
 
 .correct-answer {
   background: #d1fae5;
   border-left: 3px solid #10b981;
-  font-weight: bold;
+  font-weight: 700;
   color: #155724;
   position: relative;
 }
@@ -208,6 +245,7 @@ select {
   margin-top: 15px;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .question-actions button {
@@ -219,29 +257,37 @@ select {
   display: flex;
   align-items: center;
   gap: 5px;
+  font-weight: 600;
+  transition: background-color 0.3s;
 }
 
 .delete-btn {
-  background-color: #2EC4B6;
+  background-color: #2ec4b6;
   color: white;
 }
 
-.delete-btn:hover {
-  background-color: #835858;
+.delete-btn:hover,
+.delete-btn:focus {
+  background-color: #1b8c7c;
+  outline: none;
+  color: white;
 }
 
 .no-questions {
   text-align: center;
   padding: 30px;
   color: #666;
+  font-style: italic;
 }
+
 @media (max-width: 768px) {
   .admin-container {
     padding: 20px;
     margin: 10px;
   }
 
-  h1, h2 {
+  h1,
+  h2 {
     font-size: 22px;
   }
 
@@ -298,7 +344,8 @@ select {
 }
 
 @media (max-width: 480px) {
-  h1, h2 {
+  h1,
+  h2 {
     font-size: 20px;
   }
 

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   let questions = [];
-  let newCatInput; // define at the top so it's always available
+  let newCatInput;
 
   const loadQuestions = () => {
     const stored = localStorage.getItem("questions");
@@ -109,13 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
         categorySelect.appendChild(option);
       });
     }
-    // Add option for new category
     const newCatOption = document.createElement("option");
     newCatOption.value = "__new__";
     newCatOption.textContent = "Add New Category...";
     categorySelect.appendChild(newCatOption);
 
-    categorySelect.addEventListener('change', function() {
+    categorySelect.addEventListener('change', function () {
       if (categorySelect.value === "__new__") {
         newCatInput.style.display = 'block';
         newCatInput.focus();
@@ -246,11 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderQuestions(questions);
     loadCategories(questions);
     form.reset();
-    document.querySelectorAll(".mark-correct").forEach((btn) =>
-      btn.classList.remove("selected")
-    );
 
-    // Add a button to download the updated questions.json
     let downloadBtn = document.getElementById('download-questions-btn');
     if (!downloadBtn) {
       downloadBtn = document.createElement('button');
@@ -259,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
       downloadBtn.textContent = 'Download Updated Questions';
       form.parentNode.appendChild(downloadBtn);
     }
-    downloadBtn.onclick = function() {
+    downloadBtn.onclick = function () {
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(questions, null, 2));
       const dl = document.createElement('a');
       dl.setAttribute('href', dataStr);
@@ -268,13 +263,19 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   });
 
-  // Fetch categories and questions from questions.json
+  form.addEventListener('reset', () => {
+    document.querySelectorAll(".mark-correct").forEach((btn) =>
+      btn.classList.remove("selected")
+    );
+    if (newCatInput) newCatInput.style.display = 'none';
+  });
+
   fetch('questions.json')
     .then(response => response.json())
     .then(data => {
       const questionsFromFile = data;
       questions = questionsFromFile;
-      // Populate category dropdown
+
       const categorySelect = document.getElementById("category");
       const categories = [...new Set(questionsFromFile.map(q => q.category))];
       categorySelect.innerHTML = '<option value="">Select category</option>';
@@ -284,13 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = cat;
         categorySelect.appendChild(option);
       });
-      // Add option for new category
+
       const newCatOption = document.createElement("option");
       newCatOption.value = "__new__";
       newCatOption.textContent = "Add New Category...";
       categorySelect.appendChild(newCatOption);
 
-      // Add input for new category (hidden by default)
       if (!newCatInput) {
         newCatInput = document.createElement('input');
         newCatInput.type = 'text';
@@ -299,7 +299,8 @@ document.addEventListener("DOMContentLoaded", () => {
         newCatInput.style.display = 'none';
         categorySelect.parentNode.insertBefore(newCatInput, categorySelect.nextSibling);
       }
-      categorySelect.addEventListener('change', function() {
+
+      categorySelect.addEventListener('change', () => {
         if (categorySelect.value === "__new__") {
           newCatInput.style.display = 'block';
           newCatInput.focus();
@@ -308,11 +309,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Render existing questions
-      renderQuestions(questionsFromFile);
+      renderQuestions(questions);
     })
-    .catch(err => {
-      console.error('Error loading questions.json:', err);
-      renderQuestions([]);
+    .catch(() => {
+
+      questions = loadQuestions();
+      loadCategories(questions);
+      renderQuestions(questions);
     });
 });

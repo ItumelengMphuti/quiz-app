@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Get username and category from URL
+document.addEventListener('DOMContentLoaded', function () {
+
   const params = new URLSearchParams(window.location.search);
   const username = params.get('username');
   const category = params.get('category');
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showResults() {
-    // Save high score to localStorage
+
     const params = new URLSearchParams(window.location.search);
     const username = params.get('username') || 'Anonymous';
     const category = params.get('category') || 'General';
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     highScores.push({ name: username, score, total: filteredQuestions.length, category, date: new Date().toISOString() });
     localStorage.setItem('highScores', JSON.stringify(highScores));
 
-document.querySelector('.quiz-question').innerHTML = `
+    document.querySelector('.quiz-question').innerHTML = `
   <div class="quiz-complete-box">
     <h2 class="quiz-complete-title">Quiz Completed!</h2>
     <div class="quiz-score-large">${score} / ${filteredQuestions.length}</div>
@@ -80,12 +80,12 @@ document.querySelector('.quiz-question').innerHTML = `
   </div>
 `;
 
-document.getElementById('view-high-scores').onclick = function () {
-  window.location.href = 'highscores.html';
-};
-document.getElementById('return-home').onclick = function () {
-  window.location.href = 'index.html';
-};
+    document.getElementById('view-high-scores').onclick = function () {
+      window.location.href = 'highscores.html';
+    };
+    document.getElementById('return-home').onclick = function () {
+      window.location.href = 'index.html';
+    };
 
   }
 
@@ -116,11 +116,10 @@ document.getElementById('return-home').onclick = function () {
     .then(response => response.json())
     .then(data => {
       questions = data;
-      // Get min and max from localStorage (set by admin)
+
       const settings = JSON.parse(localStorage.getItem('quizSettings') || '{"min":1,"max":5}');
       const min = settings.min || 1;
       const max = settings.max || 5;
-      // Pick a random number between min and max
       const numQuestions = Math.floor(Math.random() * (max - min + 1)) + min;
       filteredQuestions = questions.filter(q => q.category === category);
       filteredQuestions = shuffleArray(filteredQuestions).slice(0, numQuestions);
